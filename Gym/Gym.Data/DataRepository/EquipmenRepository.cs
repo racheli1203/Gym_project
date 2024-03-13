@@ -1,6 +1,7 @@
 ﻿using Gym.Core.Models;
 using Gym.Data.DataContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,26 +17,36 @@ namespace Gym.Data.DataRepository
         {
             _context = equipmentData;
         }
-        public  IEnumerable<gymEquipment> GetAllEquipment()
+        public async Task<IEnumerable<gymEquipment>> GetAllEquipmentAsync()
         {
-            return _context.equipments.Include(e => e.staffs);
+
+            return await _context.equipments.Include(e => e.staffs).ToListAsync();
         }
 
-        public void DataPost(gymEquipment value)
+        public async Task<gymEquipment> DataPostAsync(gymEquipment value)
         {
             _context.equipments.Add(value);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            return value;
         }
-        public void DataPut(int index, gymEquipment value)
+        public async Task<gymEquipment> DataPutAsync(int index, gymEquipment value)
         {
             _context.equipments.ToList()[index] = value;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync ();
+            // _context.equipments; ToList()[index] = value;
+            //_context.equipments.First((gymEquipment e) => e == value);
+            //await _context.SaveChangesAsync();
+            return value;
         }
 
-        public void DataDeleteEquipment(int index)
+        public async Task<gymEquipment> DataDeleteEquipmentAsync(gymEquipment equipment)
         {
-            _context.Remove(_context.equipments.ToList()[index]);
-            _context.SaveChanges();
+            var temp = equipment;
+            var deleteEquipment= _context.equipments.First((gymEquipment e) => e == equipment);
+            _context.equipments.Remove(deleteEquipment);
+            await _context.SaveChangesAsync();
+            return temp;
+
         }
 
 

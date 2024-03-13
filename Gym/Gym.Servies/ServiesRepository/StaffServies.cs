@@ -16,40 +16,45 @@ namespace Gym.Servies.ServiesRepository
         {
             _staff = staff;
         }
-        public IEnumerable<Staff> GetStaff()
+        public async Task<IEnumerable<Staff>> GetStaffAsync()
         {
-            return _staff.GetAllStaff();
+            return await _staff.GetAllStaffAsync();
         }
-        public Staff GetStaffId(int workerNumber)
+        public async Task<Staff> GetStaffIdAsync(int workerNumber)
         {
-            Staff foundWorker = _staff.GetAllStaff().ToList().Find(t => t.workerNumber == workerNumber);
+            var workerList = await _staff.GetAllStaffAsync();
+            Staff foundWorker = workerList.First(t => t.workerNumber == workerNumber);
             if (foundWorker == null)
                 return null; 
             return foundWorker;
         }
-        public IEnumerable<Staff> GetPosition(string position)
+        public async Task<IEnumerable<Staff>> GetPositionAsync(string position)
         {
-            var foundpos = _staff.GetAllStaff().Where(t => t.position == position).ToList();
+            var workerList = await _staff.GetAllStaffAsync();
+            var foundpos=workerList.Where(t => t.position.ToLower() == position.ToLower());
             if (foundpos == null)
                 return null;
             return foundpos;
         }
-        public void ServicePost(Staff newWorker)
+        public async Task<Staff> ServicePostAsync(Staff newWorker)
         {
-            _staff.DataPost(newWorker);
+            await _staff.DataPostAsync(newWorker);
+            return newWorker;
 
         }
-        public void ServicePut(int workerNumber,  Staff updateWorker)
+        public async Task<Staff> ServicePutAsync(int workerNumber,  Staff updateWorker)
         {
-            int index = _staff.GetAllStaff().ToList(). FindIndex(( w) =>  w.workerNumber == workerNumber);
-            _staff.GetAllStaff().ToList()[index].name = updateWorker.name;
-            _staff.GetAllStaff().ToList()[index].dateOfBirth = updateWorker.dateOfBirth;
-           // _staff.GetAllStaff()[index].workerNumber = updateWorker.workerNumber;
-            _staff.GetAllStaff().ToList()[index].phone = updateWorker.phone;
-            _staff.GetAllStaff().ToList()[index].address = updateWorker.address;
-            _staff.GetAllStaff().ToList()[index].email = updateWorker.email;
-            _staff.GetAllStaff().ToList()[index].position = updateWorker.position;
-            _staff.DataPut(index, updateWorker);
+            var list =await _staff.GetAllStaffAsync();
+             var index= list.ToList(). FindIndex(( w) =>  w.workerNumber == workerNumber);
+            list.ToList()[index].name = updateWorker.name;
+            list.ToList()[index].dateOfBirth = updateWorker.dateOfBirth;
+            list.ToList()[index].phone = updateWorker.phone;
+            list.ToList()[index].email = updateWorker.email;
+            list.ToList()[index].position = updateWorker.position;
+            await _staff.DataPutAsync(index, updateWorker);
+            return updateWorker;
+
+           
         }
 
 

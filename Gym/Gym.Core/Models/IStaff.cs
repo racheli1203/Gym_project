@@ -8,11 +8,11 @@ namespace Gym.Core.Models
 {
     public interface IStaff
     {
-        public IEnumerable<Staff> GetAllStaff();
+        public  Task<IEnumerable<Staff>> GetAllStaffAsync();
 
-        public void DataPost(Staff newWorker);
+        public  Task<Staff> DataPostAsync(Staff newWorker);
 
-        public void DataPut(int index, Staff updateWorker);
+        public  Task<Staff> DataPutAsync(int index, Staff updateWorker);
 
 
 

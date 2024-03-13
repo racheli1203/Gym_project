@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+
 
 namespace Gym.Servies.ServiesRepository
 {
@@ -17,45 +19,48 @@ namespace Gym.Servies.ServiesRepository
         {
             _equipment = equipment;
         }
-        public IEnumerable<gymEquipment> GetEquipment()
+        public async Task<IEnumerable<gymEquipment>> GetEquipmentAsync()
         {
-            return _equipment.GetAllEquipment();
+            return await _equipment.GetAllEquipmentAsync();
         }
 
-        public gymEquipment GetEquipmentId(int id)
+        public async Task<gymEquipment> GetEquipmentIdAsync(int id)
         {
-            gymEquipment equipment = _equipment.GetAllEquipment().ToList().Find(e => e.id == id);
+            var equipmentList = await _equipment.GetAllEquipmentAsync();
+            gymEquipment equipment = equipmentList.First(e => e.id == id);
             return equipment;
-          
         }
 
 
-        public void PostEquipment(gymEquipment value)
+        public async Task<gymEquipment> PostEquipmentAsync(gymEquipment value)
         {
-            _equipment.DataPost(value);
+             await _equipment.DataPostAsync(value);
+            return value;
         }
 
-        public void PutEquipment(int id, gymEquipment value)
+        public async Task<gymEquipment> PutEquipmentAsync(int id, gymEquipment value)
         {
-            int index = _equipment.GetAllEquipment().ToList().FindIndex(( e) =>  e.id == id );
-            _equipment.GetAllEquipment().ToList()[index].name = value.name;
-            _equipment.GetAllEquipment().ToList()[index].dateOfInspection = value.dateOfInspection;
-            _equipment.GetAllEquipment().ToList()[index].category = value.category;
-            _equipment.GetAllEquipment().ToList()[index].frequencyOfTesting = value.frequencyOfTesting;
-            _equipment.GetAllEquipment().ToList()[index].expiryDate = value.expiryDate;
-             _equipment.DataPut(index, value);
+            var list = await _equipment.GetAllEquipmentAsync();
+            var index = list.ToList().FindIndex((e) => e.id == id);
+            list.ToList()[index].name = value.name;
+            list.ToList()[index].dateOfInspection = value.dateOfInspection;
+            list.ToList()[index].category = value.category;
+            list.ToList()[index].frequencyOfTesting = value.frequencyOfTesting;
+            list.ToList()[index].expiryDate = value.expiryDate;
+            await _equipment.DataPutAsync(index, value);
+            return value;
         }
 
-        public void DeleteEquipment(int id)
+        public async Task<gymEquipment> DeleteEquipmentAsync(int id)
         {
-            int index = _equipment.GetAllEquipment().ToList().FindIndex(e => e.id == id);
-            if(index != -1)
+            var equipmentList = await _equipment.GetAllEquipmentAsync();
+            gymEquipment equipmentDel = equipmentList.First((gymEquipment e) => e.id == id);
+            if (equipmentDel != null)
             {
-                _equipment.DataDeleteEquipment(index);
+               return await _equipment.DataDeleteEquipmentAsync(equipmentDel);
             }
+            return null;
 
         }
-
-
     }
 }

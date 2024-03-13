@@ -1,4 +1,7 @@
-﻿using Gym.Core.Models;
+﻿using AutoMapper;
+using Gym.Core.DTO;
+using Gym.Core.Models;
+using Gym.Core.PostPutModel;
 using Gym.Core.ServicesModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,60 +15,63 @@ namespace Gym.Controllers
     {
         
         private readonly IEquipmentService _equipment;
-        public equipmentController(IEquipmentService context)
+        private readonly IMapper _mapperEquipment;
+        public equipmentController(IEquipmentService context, IMapper mapper)
         {
             _equipment = context;
+            _mapperEquipment = mapper;
         }
-        private static int IdCount = 4;
 
 
         // GET: api/<equipmentController>
         [HttpGet]
-        public ActionResult<gymEquipment> Get()
+        public async Task<ActionResult<gymEquipment>>Get()
         {
-            var list= _equipment.GetEquipment();
-            return Ok(list);
+            var list= await _equipment.GetEquipmentAsync();
+            var listDto = _mapperEquipment.Map<IEnumerable<EquipmentDto>>(list);
+            return Ok(listDto);
         }
 
         // GET api/<equipmentController>/5
         [HttpGet("{id}")]
-        public gymEquipment Get(int id)
+        public async Task< ActionResult> Get(int id)
         {
-            return _equipment.GetEquipmentId(id);
-            //gymEquipment equipment = _equipment.GetEquipment().Find(e => e.id == id);
-            //if (equipment == null)
-            //    return null;
-            //return equipment;
+            
+                var listId= await _equipment.GetEquipmentIdAsync(id);
+                var equipmentDto = _mapperEquipment.Map<EquipmentDto>(listId);
+                 return Ok(equipmentDto);
+          
         }
 
         // POST api/<equipmentController>
         [HttpPost]
-        public gymEquipment Post([FromBody] gymEquipment newEquipment)
+        public async Task<ActionResult> Post([FromBody] EquipmentModel newEquipment)
         {
-            _equipment.PostEquipment(newEquipment);
-            return  newEquipment;
-            //_equipment.GetEquipment().Add(new gymEquipment { id = IdCount, name = newEquipment.name, dateOfInspection = newEquipment.dateOfInspection, category = newEquipment.category, frequencyOfTesting = newEquipment.frequencyOfTesting, expiryDate = newEquipment.expiryDate });
-            //IdCount++;
-            //return _equipment.GetEquipment()[_equipment.GetEquipment().Count - 1];
+            var equipmentPost = new gymEquipment { name = newEquipment.name, dateOfInspection = newEquipment.dateOfInspection, category = newEquipment.category, frequencyOfTesting = newEquipment.frequencyOfTesting, expiryDate = newEquipment.expiryDate };
+            await _equipment.PostEquipmentAsync(equipmentPost);
+            return Ok(newEquipment);  
         }
 
       
 
         // PUT api/<equipmentController>/5
         [HttpPut("{id}")]
-        public gymEquipment Put(int id, [FromBody] gymEquipment value)
+        public async Task<ActionResult> Put(int id, [FromBody] EquipmentModel newEquipment)
         {
-             _equipment.PutEquipment(id, value);
-            return value;
+            var equipmentPut = new gymEquipment { name = newEquipment.name, dateOfInspection = newEquipment.dateOfInspection, category = newEquipment.category, frequencyOfTesting = newEquipment.frequencyOfTesting, expiryDate = newEquipment.expiryDate };
+            await _equipment.PutEquipmentAsync(id, equipmentPut);
+            return Ok(newEquipment) ;
         }
         // DELETE api/<EquipmentController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            //Equipment foundEq = _equipmentService.GetEquipment().Find(e => e.Id == id);
-            //if(foundEq != null)
-            //    _equipmentService.GetEquipment().Remove(foundEq);  
-            _equipment.DeleteEquipment(id);
+            var deletedEquipment = await _equipment.DeleteEquipmentAsync(id);
+            if (deletedEquipment != null)
+            {
+                return Ok(deletedEquipment); 
+            }
+             return NotFound();       
         }
 
 

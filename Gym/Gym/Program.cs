@@ -1,4 +1,5 @@
 using Gym;
+using Gym.Core;
 using Gym.Core.Models;
 using Gym.Core.ServicesModels;
 using Gym.Data.DataContext;
@@ -42,6 +43,7 @@ builder.Services.AddScoped<IEquipment, EquipmenRepository>();
 builder.Services.AddScoped<ISubscriberService, SubscriberServies>();
 builder.Services.AddScoped<ISubscriber, SubscriberRepository>();
 builder.Services.AddDbContext<GymData>();
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 var app = builder.Build();
 

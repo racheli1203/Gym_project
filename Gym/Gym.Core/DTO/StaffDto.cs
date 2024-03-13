@@ -1,12 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Gym
+namespace Gym.Core.DTO
 {
-    public class Staff
+    public class StaffDto
     {
         [Key]
         public int workerNumber { get; set; }
-        public int id { get;  set; } 
+        public int id { get; set; }
         public string name { get; set; }
         public DateTime dateOfBirth { get; set; }
         public string phone { get; set; }
@@ -15,7 +20,7 @@ namespace Gym
         public string status { get; set; }
         public string position { get; set; }
         //public List<int> subId { get; set; }
-        public List<Subscribers> subscribersId { get; set; }
-        public List<gymEquipment> equipmentInCategory { get; set; }
+
+
     }
 }

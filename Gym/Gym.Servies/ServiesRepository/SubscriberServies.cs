@@ -17,37 +17,40 @@ namespace Gym.Servies.ServiesRepository
         {
             _subscriber = subscriber;
         }
-        public IEnumerable<Subscribers> GetSubscriber()
+        public  async Task<IEnumerable<Subscribers> >GetSubscriberAsync()
         {
-            return _subscriber.GetAllSubscriber();
+            return await _subscriber.GetAllSubscriberAsync();
         }
-        public Subscribers GetById(int subscriptionNumber)
+        public async Task<Subscribers> GetByIdAsync(int subscriptionNumber)
         {
-            Subscribers subscriber = _subscriber.GetAllSubscriber().ToList().Find(s => s.subscriptionNumber == subscriptionNumber);
+            var list =await _subscriber.GetAllSubscriberAsync();
+            Subscribers subscriber= list.First(s => s.subscriptionNumber == subscriptionNumber);
             if (subscriber == null)
                 return null;
             return subscriber;
+          
 
         }
-        public void ServicePost(Subscribers newSubscriber)
+        public async Task<Subscribers> ServicePostAsync(Subscribers newSubscriber)
         {
-             _subscriber.DataPost(newSubscriber);
-            IdCount++;
-            //return newSubscriber;
+            await _subscriber.DataPostAsync(newSubscriber);
+            return newSubscriber;
         }
-        public void ServicePut(int subscriptionNumber,  Subscribers value)
+        public async Task<Subscribers> ServicePutAsync(int subscriptionNumber,  Subscribers value)
         {
 
-            int index = _subscriber.GetAllSubscriber().ToList().FindIndex((w) => w.subscriptionNumber == subscriptionNumber );
-            _subscriber.GetAllSubscriber().ToList()[index].idSubscriber = value.idSubscriber;
-            _subscriber.GetAllSubscriber().ToList()[index].name = value.name;
-            _subscriber.GetAllSubscriber().ToList()[index].dateOfBirth = value.dateOfBirth;
-            _subscriber.GetAllSubscriber().ToList()[index].endSubscripion = value.endSubscripion;
-            _subscriber.GetAllSubscriber().ToList()[index].phone = value.phone;
-            _subscriber.GetAllSubscriber().ToList()[index].status = value.status;
-            _subscriber.GetAllSubscriber().ToList()[index].email = value.email;
-            _subscriber.GetAllSubscriber().ToList()[index].startSubscripion = value.startSubscripion;
-            _subscriber.DataPut(index, value);
+            var list = await _subscriber.GetAllSubscriberAsync();
+            var index= list.ToList().FindIndex((w) => w.subscriptionNumber == subscriptionNumber );
+            list.ToList()[index].idSubscriber = value.idSubscriber;
+            list.ToList()[index].name = value.name;
+            list.ToList()[index].dateOfBirth = value.dateOfBirth;
+            list.ToList()[index].endSubscripion = value.endSubscripion;
+            list.ToList()[index].phone = value.phone;
+            list.ToList()[index].status = value.status;
+            list.ToList()[index].email = value.email;
+            list.ToList()[index].startSubscripion = value.startSubscripion;
+            await _subscriber.DataPutAsync(index, value);
+            return value;
             //Subscribers foundsub = _subscriber.GetAllSubscriber().Find(s => s.subscriptionNumber == subscriptionNumber);
             //if (foundsub != null)
             //{

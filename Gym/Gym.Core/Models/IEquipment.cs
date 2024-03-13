@@ -8,13 +8,13 @@ namespace Gym.Core.Models
 {
     public interface IEquipment
     {
-        public IEnumerable<gymEquipment> GetAllEquipment();
+        public  Task<IEnumerable<gymEquipment>> GetAllEquipmentAsync();
 
-        public void DataPost(gymEquipment value);
+        public Task<gymEquipment> DataPostAsync(gymEquipment value);
 
-        public void DataPut(int index, gymEquipment value);
+        public Task<gymEquipment> DataPutAsync(int id, gymEquipment value);
 
-        public void DataDeleteEquipment(int index);
+        public Task<gymEquipment> DataDeleteEquipmentAsync(gymEquipment equipment);
 
 
     }

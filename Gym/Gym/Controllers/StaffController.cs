@@ -1,6 +1,11 @@
-﻿using Gym.Core.ServicesModels;
+﻿using AutoMapper;
+using Gym.Core.DTO;
+using Gym.Core.Models;
+using Gym.Core.PostPutModel;
+using Gym.Core.ServicesModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,52 +16,62 @@ namespace Gym.Controllers
     public class StaffController : ControllerBase
     {
         private readonly IStaffService _staff;
-        public StaffController(IStaffService context)
+        private readonly IMapper _mapperStff;
+
+        public StaffController(IStaffService context,IMapper mapper)
         {
             _staff = context;
+            _mapperStff = mapper;
         }
        
         private static int IdCount = 4;
 
         // GET: api/<StaffController>
         [HttpGet]
-        public IEnumerable<Staff> Get()
+        public async Task< ActionResult<Staff>> Get()
         {
-            return _staff.GetStaff();
+            var list = await _staff.GetStaffAsync();
+            var listDto = _mapperStff.Map<IEnumerable<StaffDto>>(list);
+            return Ok(listDto);
         }
 
         // GET api/<StaffController>/5
         [HttpGet("{workerNumber}")]
-        public Staff Get(int workerNumber)
+        public async Task<ActionResult>Get(int workerNumber)
         {
-            //Staff foundWorker = _staff.GetStaff().Find(t => t.id == id);
-            //if (foundWorker == null)
-            //    return null;
-            return _staff.GetStaffId(workerNumber);
+          
+            var staffObg =await _staff.GetStaffIdAsync(workerNumber);
+            var staffObgDto= _mapperStff.Map<StaffDto>(staffObg);
+
+            return Ok(staffObgDto) ;
         }
         // GET api/<StaffController>/5
         [HttpGet("getbytype/{position}")]
-        public IEnumerable<Staff> Get(string position)
+        public async Task<ActionResult<Staff>> Get(string position)
         {
-            return _staff.GetPosition(position);
+
+            var positionList =await _staff.GetPositionAsync(position);
+            var listDto = _mapperStff.Map<IEnumerable<StaffDto>>(positionList);
+            return Ok(listDto) ;
         }
       
 
         // POST api/<StaffController>
         [HttpPost]
-        public void Post([FromBody] Staff newWorker)
+        public async Task<ActionResult> Post([FromBody] StaffModel newWorker)
         {
-             _staff.ServicePost(newWorker);
-                                                                                                                                                                                                                                                                                                                                                                                       
-
+            var staffPost = new Staff { id = newWorker.id, name = newWorker.name, dateOfBirth = newWorker.dateOfBirth, phone = newWorker.phone, address = newWorker.address, email = newWorker.email, status = newWorker.status, position = newWorker.position };
+             await _staff.ServicePostAsync(staffPost);
+            return Ok(newWorker);
         }
 
         // PUT api/<StaffController>/5
         [HttpPut("{workerNumber}")]
-        public Staff Put(int workerNumber, [FromBody] Staff updateWorker)
+        public  async Task<ActionResult> Put(int workerNumber, [FromBody] StaffModel newWorker)
         {
-             _staff.ServicePut(workerNumber, updateWorker);
-            return updateWorker;
+            var staffPut= new Staff { id = newWorker.id, name = newWorker.name, dateOfBirth = newWorker.dateOfBirth, phone = newWorker.phone, address = newWorker.address, email = newWorker.email, status = newWorker.status, position = newWorker.position };
+            await _staff.ServicePutAsync(workerNumber, staffPut);
+           return Ok(newWorker);
         }
     
     }

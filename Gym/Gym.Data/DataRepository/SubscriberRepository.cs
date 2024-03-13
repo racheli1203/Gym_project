@@ -19,21 +19,23 @@ namespace Gym.Data.DataRepository
         {
             _subscriberData = subscriberData;
         }
-        public IEnumerable<Subscribers> GetAllSubscriber()
+        public async Task<IEnumerable<Subscribers>> GetAllSubscriberAsync()
         {
-            return _subscriberData.subscribers.Include(s=>s.trainer);
+            return await _subscriberData.subscribers.Include(s=>s.trainer).ToListAsync();
         }
-        public void DataPost(Subscribers newSubscriber)
+        public async Task<Subscribers> DataPostAsync(Subscribers newSubscriber)
         {
             _subscriberData.subscribers.Add(newSubscriber);
-            _subscriberData.SaveChanges();
+            await _subscriberData.SaveChangesAsync();
+            return newSubscriber;
 
 
         }
-        public void DataPut(int index, Subscribers value)
+        public  async Task<Subscribers> DataPutAsync(int index, Subscribers value)
         {
             _subscriberData.subscribers.ToList()[index] = value;
-            _subscriberData.SaveChanges();
+           await  _subscriberData.SaveChangesAsync();
+            return value;
         }
 
 

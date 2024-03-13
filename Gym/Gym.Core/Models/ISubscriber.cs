@@ -8,11 +8,11 @@ namespace Gym.Core.Models
 {
     public interface ISubscriber
     {
-        public IEnumerable<Subscribers> GetAllSubscriber();
+        public Task<IEnumerable<Subscribers>> GetAllSubscriberAsync();
 
-        public void DataPost(Subscribers newSubscriber);
+        public Task<Subscribers> DataPostAsync(Subscribers newSubscriber);
 
-        public void DataPut(int index, Subscribers value);
+        public Task<Subscribers> DataPutAsync(int index, Subscribers value);
 
     }
 }

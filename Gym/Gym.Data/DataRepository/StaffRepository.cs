@@ -17,19 +17,21 @@ namespace Gym.Data.DataRepository
         {
             _staffContext = staffData;
         }
-        public IEnumerable<Staff> GetAllStaff()
+        public async Task<IEnumerable<Staff>> GetAllStaffAsync()
         {
-            return _staffContext.Staffs.Include(s => s.subscribersId).Include(e=>e.equipmentInCategory);
+            return await _staffContext.Staffs.Include(s => s.subscribersId).Include(e=>e.equipmentInCategory).ToListAsync();
         }
-        public void DataPost( Staff newWorker)
+        public async Task< Staff> DataPostAsync( Staff newWorker)
         {
-            _staffContext.Staffs.Add(newWorker);
-            _staffContext.SaveChanges();
+             _staffContext.Staffs.Add(newWorker);
+            await _staffContext.SaveChangesAsync();
+            return newWorker;
         }
-        public void DataPut(int index, Staff updateWorker)
+        public  async Task<Staff> DataPutAsync(int index, Staff updateWorker)
         {
             _staffContext.Staffs.ToList()[index] = updateWorker;
-            _staffContext.SaveChanges();
+            await _staffContext.SaveChangesAsync();
+            return updateWorker;
         }
 
 

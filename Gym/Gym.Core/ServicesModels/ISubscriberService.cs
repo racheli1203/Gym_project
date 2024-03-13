@@ -8,13 +8,13 @@ namespace Gym.Core.ServicesModels
 {
     public interface ISubscriberService
     {
-        public IEnumerable<Subscribers> GetSubscriber();
+        public  Task<IEnumerable<Subscribers>> GetSubscriberAsync();
 
-        public Subscribers GetById(int subscriptionNumber);
+        public  Task<Subscribers> GetByIdAsync(int subscriptionNumber);
 
-        public void ServicePost(Subscribers newSubscriber);
+        public  Task<Subscribers> ServicePostAsync(Subscribers newSubscriber);
 
-        public void ServicePut(int subscriptionNumber, Subscribers value);
+        public  Task<Subscribers> ServicePutAsync(int subscriptionNumber, Subscribers value);
 
 
     }

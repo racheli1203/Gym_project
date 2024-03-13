@@ -1,4 +1,7 @@
-﻿using Gym.Core.Models;
+﻿using AutoMapper;
+using Gym.Core.DTO;
+using Gym.Core.Models;
+using Gym.Core.PostPutModel;
 using Gym.Core.ServicesModels;
 using Gym.Servies.ServiesRepository;
 using Microsoft.AspNetCore.Mvc;
@@ -13,52 +16,49 @@ namespace Gym.Controllers
     {
 
         private readonly ISubscriberService _subscriberServies;
-        public SubscriberController(ISubscriberService subscriberServies)
+        private readonly IMapper _mapperSubscriber;
+
+        public SubscriberController(ISubscriberService subscriberServies,IMapper mapper)
         {
             _subscriberServies = subscriberServies;
+            _mapperSubscriber = mapper;
         }
         // GET: api/<SubscriptionsController>
         [HttpGet]
-        public IEnumerable<Subscribers> Get()
+        public async Task< ActionResult<Subscribers>> Get()
         {
-            return _subscriberServies.GetSubscriber();
+                var list=await _subscriberServies.GetSubscriberAsync();
+                var listDto = _mapperSubscriber.Map<IEnumerable<SubscriberDto>>(list);
+            return Ok(listDto);
+
         }
 
         // GET api/<SubscriptionsController>/5
         [HttpGet("{subscriptionNumber}")]
-        public Subscribers Get(int subscriptionNumber)
+        public async Task<ActionResult> Get(int subscriptionNumber)
         {
-           return _subscriberServies.GetById(subscriptionNumber);
+                var subscriptionID=await _subscriberServies.GetByIdAsync(subscriptionNumber);
+                var  subscriberDto = _mapperSubscriber.Map<SubscriberDto>(subscriptionID);
+
+            return Ok(subscriberDto);
         }
 
         // POST api/<SubscriptionsController>
         [HttpPost]
-        public void Post([FromBody] Subscribers newSubscriber)
+        public async Task<ActionResult> Post([FromBody] SubscricersModel newSubscriber)
         {
-             _subscriberServies.ServicePost(newSubscriber);
+            var subscriberPost = new Subscribers { idSubscriber=newSubscriber.idSubscriber,name= newSubscriber.name,dateOfBirth= newSubscriber.dateOfBirth,phone= newSubscriber.phone, email = newSubscriber.email, trainerId= newSubscriber.trainerId };
+            var sub= await _subscriberServies.ServicePostAsync(subscriberPost);
+            return Ok(sub);
         }
 
         // PUT api/<SubscriptionsController>/5
         [HttpPut("{subscriptionNumber}")]
-        public Subscribers Put(int subscriptionNumber, [FromBody] Subscribers value)
+        public async Task<ActionResult> Put(int subscriptionNumber, [FromBody] SubscricersModel newSubscriber)
         {
-             _subscriberServies.ServicePut(subscriptionNumber, value);
-             return value;
-            //Subscribers foundsub = _subscriberServies.GetSubscriber().Find(s => s.subscriptionNumber == subscriptionNumber);
-            //if (foundsub != null)
-            //{
-            //    foundsub.id = foundsub.id;
-            //    foundsub.phone = foundsub.phone;
-            //    foundsub.email = value.email;
-            //    foundsub.name = value.name;
-            //    foundsub.status = value.status;
-            //    foundsub.dateOfBirth = value.dateOfBirth;
-            //    foundsub.endSubscripion = value.endSubscripion;
-            //    foundsub.startSubscripion = value.startSubscripion;
-
-            //}
-            //return foundsub;
-
+            var subscriberPut = new Subscribers { idSubscriber = newSubscriber.idSubscriber, name = newSubscriber.name, dateOfBirth = newSubscriber.dateOfBirth, phone = newSubscriber.phone, email = newSubscriber.email, trainerId = newSubscriber.trainerId };
+            await _subscriberServies.ServicePutAsync(subscriptionNumber, subscriberPut);
+             return Ok(newSubscriber) ;
         }
 
        

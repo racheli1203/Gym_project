@@ -8,19 +8,14 @@ namespace Gym.Core.ServicesModels
 {
     public interface IStaffService
     {
-        public IEnumerable<Staff> GetStaff();
+        public Task<IEnumerable<Staff>> GetStaffAsync();
 
-        public Staff GetStaffId(int id);
+        public  Task<Staff> GetStaffIdAsync(int workerNumber);
 
-        public IEnumerable<Staff> GetPosition(string position);
+        public Task<IEnumerable<Staff>> GetPositionAsync(string position);
 
-        public void ServicePost(Staff newWorker);
+        public  Task<Staff> ServicePostAsync(Staff newWorker);
 
-        public void ServicePut(int id, Staff updateWorker);
-
-
-
-
-
+        public Task<Staff> ServicePutAsync(int workerNumber, Staff updateWorker);
     }
 }

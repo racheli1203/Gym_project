@@ -8,16 +8,16 @@ namespace Gym.Core.ServicesModels
 {
     public interface IEquipmentService
     {
-        public IEnumerable<gymEquipment> GetEquipment();
+        public Task<IEnumerable<gymEquipment>> GetEquipmentAsync();
 
-        public gymEquipment GetEquipmentId(int id);
+        public Task<gymEquipment> GetEquipmentIdAsync(int id);
 
-        public void PostEquipment(gymEquipment newEquipment);
+        public Task<gymEquipment> PostEquipmentAsync(gymEquipment value);
 
-        public void PutEquipment(int id, gymEquipment value);
+        public  Task<gymEquipment> PutEquipmentAsync(int id, gymEquipment value);
 
 
-        public void DeleteEquipment(int id);
+        public Task<gymEquipment> DeleteEquipmentAsync(int id);
 
         //void PostEquipment(gymEquipment value);
 
