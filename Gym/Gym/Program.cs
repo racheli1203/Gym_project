@@ -4,6 +4,7 @@ using Gym.Core.Models;
 using Gym.Core.ServicesModels;
 using Gym.Data.DataContext;
 using Gym.Data.DataRepository;
+using Gym.MiddleWares;
 using Gym.Servies.ServiesRepository;
 using System.Text.Json.Serialization;
 
@@ -58,6 +59,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.UseCors(policy);
+
+app.UseMiddleware<ShabatMiddleware>();
 
 
 app.MapControllers();
