@@ -64,6 +64,17 @@ namespace Gym.Controllers
              await _staff.ServicePostAsync(staffPost);
             return Ok(newWorker);
         }
+        // POST api/<StaffController>
+        [HttpPost("equipment")]
+        public async Task<ActionResult> Post(int staffId, int equipmentId)
+        {
+            var eqToStaff= await _staff.ServicePostEqAsync(staffId, equipmentId);
+            return Ok(eqToStaff);
+
+            //var staffPost = new Staff { id = newWorker.id, name = newWorker.name, dateOfBirth = newWorker.dateOfBirth, phone = newWorker.phone, address = newWorker.address, email = newWorker.email, status = newWorker.status, position = newWorker.position };
+            //await _staff.ServicePostAsync(staffPost);
+            //return Ok(newWorker);
+        }
 
         // PUT api/<StaffController>/5
         [HttpPut("{workerNumber}")]

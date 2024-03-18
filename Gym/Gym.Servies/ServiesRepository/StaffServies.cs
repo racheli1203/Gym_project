@@ -42,6 +42,12 @@ namespace Gym.Servies.ServiesRepository
             return newWorker;
 
         }
+
+        public async Task<Staff> ServicePostEqAsync(int staffId, int equipmentId){
+            Staff s= await _staff.DataPostEqToStaff(staffId, equipmentId);
+            return s;
+        }
+       
         public async Task<Staff> ServicePutAsync(int workerNumber,  Staff updateWorker)
         {
             var list =await _staff.GetAllStaffAsync();

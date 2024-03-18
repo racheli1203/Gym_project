@@ -14,6 +14,9 @@ namespace Gym.Core.Models
 
         public  Task<Staff> DataPutAsync(int index, Staff updateWorker);
 
+        public Task<Staff> DataPostEqToStaff(int staffId, int equipmentId);
+
+
 
 
 

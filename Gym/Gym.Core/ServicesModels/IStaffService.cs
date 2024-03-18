@@ -17,5 +17,7 @@ namespace Gym.Core.ServicesModels
         public  Task<Staff> ServicePostAsync(Staff newWorker);
 
         public Task<Staff> ServicePutAsync(int workerNumber, Staff updateWorker);
+
+        public  Task<Staff> ServicePostEqAsync(int staffId, int equipmentId);
     }
 }

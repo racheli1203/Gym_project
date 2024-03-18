@@ -33,7 +33,50 @@ namespace Gym.Data.DataRepository
             await _staffContext.SaveChangesAsync();
             return updateWorker;
         }
+        //Staff foundWorker = workerList.First(t => t.workerNumber == workerNumber);
+
+        //public async Task<Staff> DataPostEqToStaff(int staffId,int equipmentId)
+        //{
+        //    Staff postToStaff = _staffContext.Staffs.First(s => s.workerNumber == staffId);
+        //    gymEquipment equipmentToSaff = _staffContext.equipments.First(e => e.id == equipmentId);
+        //    postToStaff.equipmentInCategory.Prepend(equipmentToSaff);
+        //    await _staffContext.SaveChangesAsync();
+        //    return postToStaff;
+
+        //}
+        public async Task<Staff> DataPostEqToStaff(int staffId, int equipmentId)
+        {
+            // Find the staff member by ID
+            Staff postToStaff = await _staffContext.Staffs
+                                                .Include(s => s.equipmentInCategory) // Include equipmentInCategory navigation property
+                                                .FirstOrDefaultAsync(s => s.workerNumber == staffId);
+
+            // Find the equipment by ID
+            gymEquipment equipmentToStaff = await _staffContext.equipments.FirstOrDefaultAsync(e => e.id == equipmentId);
+
+            // Ensure the staff member and equipment exist
+            if (postToStaff != null && equipmentToStaff != null)
+            {
+                // Initialize the equipmentInCategory collection if it's null
+                if (postToStaff.equipmentInCategory == null)
+                {
+                    postToStaff.equipmentInCategory = new List<gymEquipment>();
+                }
+
+                // Always add the equipment to the end of the list
+                postToStaff.equipmentInCategory.Add(equipmentToStaff);
+
+                // Save changes to the database
+                await _staffContext.SaveChangesAsync();
+            }
+
+            return postToStaff;
+        }
 
 
-   }
+
+
+
+
+    }
 }
